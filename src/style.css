@@ -13,6 +13,14 @@
         --accent-glow: rgba(52, 97, 232, 0.15);
         --green: #00a86b;
         --green-glow: rgba(0, 168, 107, 0.18);
+        --canvas-bg: #eef1f6;
+        --canvas-dot: rgba(52, 97, 232, 0.10);
+        --code-bg: #eef1f6;
+        --code-text: #5a6478;
+        --option-bg: #ffffff;
+        --overlay-soft: rgba(15, 20, 25, 0.04);
+        --overlay-mid: rgba(15, 20, 25, 0.45);
+        --overlay-strong: rgba(247, 248, 250, 0.7);
         --mono: "DM Mono", monospace;
         --sans: "DM Sans", sans-serif;
         --display: "Syne", sans-serif;
@@ -34,6 +42,14 @@
         --accent-glow: rgba(79, 126, 255, 0.2);
         --green: #00e5a0;
         --green-glow: rgba(0, 229, 160, 0.18);
+        --canvas-bg: #05070d;
+        --canvas-dot: rgba(79, 126, 255, 0.08);
+        --code-bg: #070910;
+        --code-text: #8892a8;
+        --option-bg: #1f2535;
+        --overlay-soft: rgba(255, 255, 255, 0.024);
+        --overlay-mid: rgba(255, 255, 255, 0.45);
+        --overlay-strong: rgba(8, 10, 14, 0.7);
         color-scheme: dark;
       }
       .theme-toggle {
@@ -275,7 +291,8 @@
         -webkit-appearance: none;
       }
       select option {
-        background: #1f2535;
+        background: var(--option-bg);
+        color: var(--text);
       }
       textarea {
         resize: none;
@@ -729,14 +746,14 @@
         color: var(--text-dim);
       }
       .code-body {
-        background: #070910;
+        background: var(--code-bg);
         padding: 14px;
         overflow: auto;
         max-height: 260px;
         font-family: var(--mono);
         font-size: 10.5px;
         line-height: 1.7;
-        color: #8892a8;
+        color: var(--code-text);
         white-space: pre;
         tab-size: 2;
       }
@@ -1080,9 +1097,9 @@
 
       /* Dot-grid canvas background */
       .canvas {
-        background-color: #05070d;
+        background-color: var(--canvas-bg);
         background-image:
-          radial-gradient(circle, rgba(79,126,255,0.08) 1px, transparent 1px);
+          radial-gradient(circle, var(--canvas-dot) 1px, transparent 1px);
         background-size: 28px 28px;
       }
 
