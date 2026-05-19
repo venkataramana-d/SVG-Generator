@@ -1,0 +1,1352 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edstellar SVG Studio v4 — Professional Skill Card Generator</title>
+    <link rel="stylesheet" href="src/fonts.css">
+    <link rel="stylesheet" href="src/style.css">
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <div class="logo-pulse"></div>
+        <div class="logo-info">
+          <div>
+            SVG Studio
+            <span style="color:var(--green);font-weight:700;font-size:11px">v6.1</span>
+          </div>
+          <div class="logo-sub">EDSTELLAR · CARDS + INFOGRAPHICS</div>
+        </div>
+      </div>
+      <div class="header-pills">
+        <div class="hpill" id="hpill-palette">palette —</div>
+        <div class="hpill" id="hpill-pattern">pattern —</div>
+        <div class="hpill" id="hpill-icon">icon —</div>
+        <div class="hpill" id="hpill-anim">anim —</div>
+        <div class="hpill live">● live</div>
+      </div>
+    </header>
+    <div class="app">
+      <div class="sidebar">
+        <div class="sb-tabs">
+          <div class="sb-tab active" onclick="showPanel('info')" title="Skill / Infographic content">◼ Skill</div>
+          <div class="sb-tab" onclick="showPanel('style')" title="Colour palette &amp; custom colours">◈ Style</div>
+          <div class="sb-tab" onclick="showPanel('icon')" title="Icon set">⬡ Icon</div>
+          <div class="sb-tab" onclick="showPanel('anim')" title="Animation">◎ Anim</div>
+          <div class="sb-tab" onclick="showPanel('fine')" title="Advanced fine-tuning">⚙ Fine</div>
+          <div class="sb-tab" onclick="showPanel('batch')" title="Batch export">⊞ Batch</div>
+          <div class="sb-tab" onclick="showPanel('history')" title="Generation history">◷ Log</div>
+        </div>
+        <div class="sb-panels-wrap">
+        <div class="sb-panel active" id="panel-info">
+          <div class="f-group" style="margin-bottom: 4px">
+            <div class="f-label">
+              Output mode
+              <span class="f-hint">card banner or blog infographic</span>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: var(--r-sm);
+                padding: 4px;
+              "
+            >
+              <button
+                type="button"
+                id="modeBtnCard"
+                onclick="switchMode('card')"
+                style="
+                  padding: 8px 6px;
+                  border-radius: 5px;
+                  border: none;
+                  background: var(--accent);
+                  color: white;
+                  font-family: var(--mono);
+                  font-size: 9px;
+                  font-weight: 600;
+                  letter-spacing: 0.08em;
+                  text-transform: uppercase;
+                  cursor: pointer;
+                  transition: all 0.15s;
+                "
+              >
+                ◼ Skill Card</button
+              ><button
+                type="button"
+                id="modeBtnIG"
+                onclick="switchMode('infographic')"
+                style="
+                  padding: 8px 6px;
+                  border-radius: 5px;
+                  border: none;
+                  background: transparent;
+                  color: var(--text-dim);
+                  font-family: var(--mono);
+                  font-size: 9px;
+                  font-weight: 600;
+                  letter-spacing: 0.08em;
+                  text-transform: uppercase;
+                  cursor: pointer;
+                  transition: all 0.15s;
+                "
+              >
+                ▦ Infographic
+              </button>
+            </div>
+          </div>
+          <div id="cardModeFields">
+            <div class="suggest-bar">
+              <div class="suggest-icon">✦</div>
+              <div class="suggest-text" id="suggest-text">
+                Type a skill name — auto-detects palette, icon &amp; animation
+              </div>
+              <div class="suggest-btn" onclick="autoSuggest()">Smart Fill</div>
+            </div>
+            <div class="f-group">
+              <div class="f-label">
+                Skill name <span class="f-hint">auto-maps to best visual</span>
+              </div>
+              <input
+                type="text"
+                id="skillName"
+                placeholder="e.g. Cybersecurity"
+                value="Artificial Intelligence and Machine Learning"
+                oninput="onSkillNameChange()"
+              />
+            </div>
+            <div class="f-group">
+              <div class="f-label">Quick presets</div>
+              <div class="preset-pills" id="presetPills"></div>
+            </div>
+            <div class="f-group">
+              <div class="f-label">Sector tag</div>
+              <input
+                type="text"
+                id="skillSector"
+                placeholder="e.g. Technology · AI"
+                value="Technology · AI"
+              />
+            </div>
+            <div class="f-group">
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  cursor: pointer;
+                  font-size: 11px;
+                  color: var(--text-mid);
+                  user-select: none;
+                "
+                ><input
+                  type="checkbox"
+                  id="showTitle"
+                  oninput="generate()"
+                  style="
+                    width: 14px;
+                    height: 14px;
+                    cursor: pointer;
+                    accent-color: var(--accent);
+                  "
+                />Show title overlay
+                <span class="f-hint"
+                  >(skill name + sector inside SVG)</span
+                ></label
+              >
+            </div>
+            <div class="f-group">
+              <div class="f-label">Canvas size</div>
+              <select id="canvasSize" onchange="generate()">
+                <optgroup label="Skill cards">
+                  <option value="820x180" selected>
+                    820 × 180 — Standard (default)
+                  </option>
+                  <option value="820x220">820 × 220 — Tall</option>
+                  <option value="820x140">820 × 140 — Compact</option>
+                  <option value="1200x300">1200 × 300 — Wide Hero</option>
+                </optgroup>
+                <optgroup label="Social / Sharing">
+                  <option value="1200x630">
+                    1200 × 630 — OG / LinkedIn / Twitter
+                  </option>
+                  <option value="1584x396">1584 × 396 — LinkedIn Banner</option>
+                  <option value="1080x1080">
+                    1080 × 1080 — Instagram Square
+                  </option>
+                  <option value="1080x1920">1080 × 1920 — Story / Reel</option>
+                  <option value="400x400">400 × 400 — Square (small)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <div id="igModeFields" style="display: none">
+            <div
+              class="suggest-bar"
+              style="
+                background: rgba(79, 142, 255, 0.08);
+                border-color: rgba(79, 142, 255, 0.3);
+              "
+            >
+              <div class="suggest-icon">▦</div>
+              <div class="suggest-text">
+                Upload a photo, edit the title, and hit Generate. Each skill row
+                auto-picks an icon + accent colour.
+              </div>
+            </div>
+            <div class="f-group">
+              <div class="f-label">Title — plain <span class="f-hint">white, first line</span></div>
+              <input type="text" id="igTitlePlain" placeholder="10 Must-Have Skills for a" value="10 Must-Have Skills for a" oninput="generate()" style="margin-bottom:6px"/>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:center">
+                <div class="slider-row" style="margin:0">
+                  <span class="slider-label" style="font-size:9px">Size</span>
+                  <input type="range" id="igTitlePlainSize" min="22" max="78" value="46" oninput="document.getElementById('igTitlePlainSizeVal').textContent=this.value;generate()"/>
+                  <span class="slider-val" id="igTitlePlainSizeVal">46</span>
+                </div>
+                <select id="igTitlePlainWeight" onchange="generate()" style="font-size:10px;padding:4px 6px">
+                  <option value="400">Regular</option>
+                  <option value="600">Semi Bold</option>
+                  <option value="700" selected>Bold</option>
+                  <option value="800">Extra Bold</option>
+                </select>
+              </div>
+            </div>
+            <div class="f-group">
+              <div class="f-label">Title — accent <span class="f-hint">highlighted line</span></div>
+              <input type="text" id="igTitleAccent" placeholder="Frontend Developer in 2026" value="Frontend Developer in 2026" oninput="generate()" style="margin-bottom:6px"/>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:center">
+                <div class="slider-row" style="margin:0">
+                  <span class="slider-label" style="font-size:9px">Size</span>
+                  <input type="range" id="igTitleAccentSize" min="22" max="78" value="46" oninput="document.getElementById('igTitleAccentSizeVal').textContent=this.value;generate()"/>
+                  <span class="slider-val" id="igTitleAccentSizeVal">46</span>
+                </div>
+                <select id="igTitleAccentWeight" onchange="generate()" style="font-size:10px;padding:4px 6px">
+                  <option value="400">Regular</option>
+                  <option value="600">Semi Bold</option>
+                  <option value="700">Bold</option>
+                  <option value="800" selected>Extra Bold</option>
+                </select>
+              </div>
+            </div>
+            <div class="f-group">
+              <div class="f-label">Accent colour</div>
+              <div style="display: flex; gap: 8px; align-items: center">
+                <div class="col-swatch" style="width: 36px; height: 32px">
+                  <input
+                    type="color"
+                    id="igAccentColor"
+                    value="#C7E858"
+                    oninput="generate()"
+                  />
+                </div>
+                <input
+                  type="text"
+                  id="igAccentColorT"
+                  value="#C7E858"
+                  oninput="syncIGAccent()"
+                  style="flex: 1; font-family: var(--mono); font-size: 11px"
+                />
+              </div>
+            </div>
+            <!-- ══ CONTENT ALIGNMENT ══ -->
+            <div class="f-group" style="margin-top:6px;margin-bottom:2px">
+              <div class="f-label" style="font-size:10px">Content Alignment</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:4px" id="igContentAlignSwitcher">
+                <button type="button" id="igAlignBtn-left"   onclick="switchIGAlign('left')"   style="padding:6px 3px;border-radius:5px;border:none;background:var(--accent);color:white;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s">⬛ Left</button>
+                <button type="button" id="igAlignBtn-center" onclick="switchIGAlign('center')" style="padding:6px 3px;border-radius:5px;border:none;background:transparent;color:var(--text-dim);font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s">⬛ Center</button>
+                <button type="button" id="igAlignBtn-right"  onclick="switchIGAlign('right')"  style="padding:6px 3px;border-radius:5px;border:none;background:transparent;color:var(--text-dim);font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s">⬛ Right</button>
+              </div>
+            </div>
+
+            <!-- ══ BACKGROUND CUSTOMISATION ══ -->
+            <div class="sec-label" style="margin-top:4px">Background</div>
+
+            <!-- Type switcher -->
+            <div class="f-group" style="margin-bottom:6px">
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr 1fr 1fr;
+                  gap: 4px;
+                  background: var(--surface2);
+                  border: 1px solid var(--border);
+                  border-radius: var(--r-sm);
+                  padding: 4px;
+                "
+                id="igBgTypeSwitcher"
+              >
+                <button type="button" id="igBgTypeBtn-gradient" onclick="switchIGBgType('gradient')" style="padding:7px 3px;border-radius:5px;border:none;background:var(--accent);color:white;font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s">Gradient</button>
+                <button type="button" id="igBgTypeBtn-solid"    onclick="switchIGBgType('solid')"    style="padding:7px 3px;border-radius:5px;border:none;background:transparent;color:var(--text-dim);font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s">Solid</button>
+                <button type="button" id="igBgTypeBtn-mesh"     onclick="switchIGBgType('mesh')"     style="padding:7px 3px;border-radius:5px;border:none;background:transparent;color:var(--text-dim);font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s">Mesh</button>
+                <button type="button" id="igBgTypeBtn-image"    onclick="switchIGBgType('image')"    style="padding:7px 3px;border-radius:5px;border:none;background:transparent;color:var(--text-dim);font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s">Photo</button>
+              </div>
+            </div>
+
+            <!-- Gradient controls -->
+            <div id="igBgGradSection">
+              <div class="f-group">
+                <div class="f-label" style="font-size:10px">From colour</div>
+                <div class="col-swatch-wrap">
+                  <div class="col-swatch"><input type="color" id="igBgGradFrom" value="#0F1629" oninput="document.getElementById('igBgGradFromT').value=this.value;generate()"/></div>
+                  <input type="text" id="igBgGradFromT" value="#0F1629" oninput="syncIGBgGradFrom()" style="font-family:var(--mono);font-size:10px"/>
+                </div>
+              </div>
+              <div class="f-group">
+                <div class="f-label" style="font-size:10px">To colour</div>
+                <div class="col-swatch-wrap">
+                  <div class="col-swatch"><input type="color" id="igBgGradTo" value="#1E2D6B" oninput="document.getElementById('igBgGradToT').value=this.value;generate()"/></div>
+                  <input type="text" id="igBgGradToT" value="#1E2D6B" oninput="syncIGBgGradTo()" style="font-family:var(--mono);font-size:10px"/>
+                </div>
+              </div>
+              <div class="f-group">
+                <div class="f-label" style="font-size:10px">Direction</div>
+                <select id="igBgGradDir" onchange="generate()">
+                  <option value="tl-br" selected>Top-left → Bottom-right</option>
+                  <option value="l-r">Left → Right</option>
+                  <option value="t-b">Top → Bottom</option>
+                  <option value="tr-bl">Top-right → Bottom-left</option>
+                  <option value="radial">Radial (centre glow)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Solid colour controls -->
+            <div id="igBgSolidSection" style="display:none">
+              <div class="f-group">
+                <div class="f-label" style="font-size:10px">Background colour</div>
+                <div class="col-swatch-wrap">
+                  <div class="col-swatch"><input type="color" id="igBgSolidColor" value="#0F1629" oninput="document.getElementById('igBgSolidColorT').value=this.value;generate()"/></div>
+                  <input type="text" id="igBgSolidColorT" value="#0F1629" oninput="syncIGBgSolid()" style="font-family:var(--mono);font-size:10px"/>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mesh controls -->
+            <div id="igBgMeshSection" style="display:none">
+              <div class="f-label" style="font-size:10px;margin-bottom:6px">Mesh colours <span class="f-hint">4-point radial blend</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                <div>
+                  <div class="f-label" style="font-size:9px;color:var(--text-dim)">Top-left</div>
+                  <div class="col-swatch-wrap">
+                    <div class="col-swatch"><input type="color" id="igBgMesh1" value="#0F1629" oninput="generate()"/></div>
+                    <input type="text" id="igBgMesh1T" value="#0F1629" oninput="syncIGMesh(1)" style="font-family:var(--mono);font-size:9px"/>
+                  </div>
+                </div>
+                <div>
+                  <div class="f-label" style="font-size:9px;color:var(--text-dim)">Top-right</div>
+                  <div class="col-swatch-wrap">
+                    <div class="col-swatch"><input type="color" id="igBgMesh2" value="#1A1040" oninput="generate()"/></div>
+                    <input type="text" id="igBgMesh2T" value="#1A1040" oninput="syncIGMesh(2)" style="font-family:var(--mono);font-size:9px"/>
+                  </div>
+                </div>
+                <div>
+                  <div class="f-label" style="font-size:9px;color:var(--text-dim)">Bottom-left</div>
+                  <div class="col-swatch-wrap">
+                    <div class="col-swatch"><input type="color" id="igBgMesh3" value="#0A2540" oninput="generate()"/></div>
+                    <input type="text" id="igBgMesh3T" value="#0A2540" oninput="syncIGMesh(3)" style="font-family:var(--mono);font-size:9px"/>
+                  </div>
+                </div>
+                <div>
+                  <div class="f-label" style="font-size:9px;color:var(--text-dim)">Bottom-right</div>
+                  <div class="col-swatch-wrap">
+                    <div class="col-swatch"><input type="color" id="igBgMesh4" value="#2D1B69" oninput="generate()"/></div>
+                    <input type="text" id="igBgMesh4T" value="#2D1B69" oninput="syncIGMesh(4)" style="font-family:var(--mono);font-size:9px"/>
+                  </div>
+                </div>
+              </div>
+              <div class="f-group" style="margin-top:8px">
+                <div class="f-label" style="font-size:10px">Base colour</div>
+                <div class="col-swatch-wrap">
+                  <div class="col-swatch"><input type="color" id="igBgMeshBase" value="#080C1A" oninput="generate()"/></div>
+                  <input type="text" id="igBgMeshBaseT" value="#080C1A" oninput="syncIGMeshBase()" style="font-family:var(--mono);font-size:10px"/>
+                </div>
+              </div>
+            </div>
+
+            <!-- Image / photo controls -->
+            <div id="igBgImageSection" style="display:none">
+              <div class="f-group">
+                <div class="f-label" style="font-size:10px">Photo <span class="f-hint">JPG · PNG · WebP · GIF · AVIF</span></div>
+                <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">
+                  <label style="flex:1;display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;font-size:10px;color:var(--text-mid)" id="igBgFileLabel">
+                    <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1v9M3 7l4-4 4 4M2 13h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span id="igBgFileName">Choose image…</span>
+                    <input type="file" id="igBgFile" accept=".jpg,.jpeg,.png,.webp,.gif,.avif,.bmp,.svg,image/*" onchange="handleIGBgUpload(event)" style="display:none"/>
+                  </label>
+                  <button type="button" class="act-btn" onclick="clearIGBg()" title="Clear background image">✕</button>
+                </div>
+                <div id="igBgPreview" style="display:none;height:60px;border-radius:6px;background-size:cover;background-position:center;border:1px solid var(--border)"></div>
+                <div class="slider-row" style="margin-top:8px">
+                  <span class="slider-label">Dim</span>
+                  <input type="range" id="igBgDim" min="0" max="90" value="55" oninput="document.getElementById('igBgDimT').textContent=this.value;generate()"/>
+                  <span class="slider-val" id="igBgDimT">55</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pattern overlay hidden input (kept for API compat) -->
+            <input type="hidden" id="igBgPatternEnable" value="0"/>
+            <input type="hidden" id="igBgPatternOpacity" value="10"/>
+            <input type="hidden" id="igOverlayStyle" value="none"/>
+            <div class="f-group">
+              <div class="f-label">
+                Skill rows
+                <span class="f-hint">one per line · name [| score]</span>
+              </div>
+              <textarea id="igRows" rows="12" style="min-height: 180px" oninput="S.igRowIcons={};generate()">
+Modern JavaScript Fluency
+TypeScript and Type-Driven Development for Scale
+Component Architecture and Design Systems
+Performance Engineering
+Accessibility (A11y) as an Engineering Discipline and Risk Control
+Security Mindset for the Frontend
+Testing Strategy and Quality Engineering for UI Systems
+Version Control and Collaborative Delivery
+Frontend Observability and Engineering Intelligence
+AI-Augmented Development Literacy</textarea
+              >
+            </div>
+            <!-- Row icon overrides — populated dynamically after first generate -->
+            <div class="ig-card" id="igRowIconsCard" style="display:none;margin-top:-4px">
+              <div class="ig-card-label" style="display:flex;align-items:center;justify-content:space-between">
+                <span>Row Icons</span>
+                <span style="opacity:.45;font-weight:400;text-transform:none;letter-spacing:0;font-size:8px;font-family:var(--mono)">click to override</span>
+              </div>
+              <div id="igRowIconsList" style="display:flex;flex-direction:column;gap:5px"></div>
+            </div>
+            <div class="sec-label">Layout &amp; Style</div>
+            <div class="f-group">
+              <div class="f-label">Canvas size</div>
+              <select id="igCanvasSize" onchange="generate()">
+                <optgroup label="Blog-inline">
+                  <option value="1080x1350" selected>
+                    1080 × 1350 — Blog / Pinterest (4:5)
+                  </option>
+                  <option value="1200x1500">
+                    1200 × 1500 — Blog inline wide
+                  </option>
+                  <option value="750x950">
+                    750 × 950 — Blog inline compact
+                  </option>
+                </optgroup>
+                <optgroup label="Social">
+                  <option value="1080x1920">
+                    1080 × 1920 — Story / Reel (9:16)
+                  </option>
+                  <option value="1080x1080">1080 × 1080 — Square</option>
+                  <option value="1200x630">1200 × 630 — OG / LinkedIn</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="f-group">
+              <div class="f-label">Rows take</div>
+              <select id="igLayout" onchange="generate()">
+                <option value="half" selected>
+                  Left half (photo shows on right)
+                </option>
+                <option value="full">Full width</option>
+              </select>
+            </div>
+            <div class="f-group">
+              <div class="f-label">Row style</div>
+              <select id="igRowStyle" onchange="generate()">
+                <option value="pill" selected>
+                  Pill · rounded, subtle fill
+                </option>
+                <option value="card">Card · thicker, strong fill</option>
+                <option value="bar">Bar · slim, minimal</option>
+              </select>
+            </div>
+            <div class="f-group">
+              <div class="f-label">Icon tile style</div>
+              <select id="igIconStyle" onchange="generate()">
+                <option value="solid" selected>
+                  Solid · tinted background
+                </option>
+                <option value="gradient">Gradient · two-tone</option>
+                <option value="outline">Outline · transparent</option>
+              </select>
+            </div>
+            <div class="f-group">
+              <div class="f-label">Title size</div>
+              <div class="slider-row">
+                <span class="slider-label" style="font-size:10px;font-weight:700">A</span>
+                <input type="range" id="igTitleScale" min="22" max="78" value="46"
+                  oninput="document.getElementById('igTitleScaleVal').textContent=this.value;generate()"/>
+                <span class="slider-val" id="igTitleScaleVal">46</span>
+              </div>
+            </div>
+            <div class="f-group">
+              <div class="f-label">Row count</div>
+              <select id="igRowLimit" onchange="generate()">
+                <option value="5">5 rows</option>
+                <option value="7">7 rows</option>
+                <option value="10" selected>10 rows</option>
+                <option value="12">12 rows</option>
+              </select>
+            </div>
+            <div class="f-group">
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  cursor: pointer;
+                  font-size: 11px;
+                  color: var(--text-mid);
+                  user-select: none;
+                "
+                ><input
+                  type="checkbox"
+                  id="igShowBrandPill"
+                  checked
+                  oninput="generate()"
+                  style="width: 14px; height: 14px; accent-color: var(--accent)"
+                />Show EDSTELLAR brand pill</label
+              >
+            </div>
+            <div class="f-group">
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  cursor: pointer;
+                  font-size: 11px;
+                  color: var(--text-mid);
+                  user-select: none;
+                "
+                ><input
+                  type="checkbox"
+                  id="igShowNumbers"
+                  oninput="generate()"
+                  style="width: 14px; height: 14px; accent-color: var(--accent)"
+                />Show 01 / 02 numbering</label
+              >
+            </div>
+            <div class="f-group">
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  cursor: pointer;
+                  font-size: 11px;
+                  color: var(--text-mid);
+                  user-select: none;
+                "
+                ><input
+                  type="checkbox"
+                  id="igShowDecorations"
+                  checked
+                  oninput="generate()"
+                  style="width: 14px; height: 14px; accent-color: var(--accent)"
+                />Decorative dots (when no photo)</label
+              >
+            </div>
+
+            <!-- ══ DECORATION STYLE ══ -->
+            <div class="sec-label" style="margin-top:6px">
+              Decoration Style
+              <button
+                type="button"
+                onclick="autoSuggestDecoration()"
+                style="
+                  float:right;
+                  font-family:var(--mono);font-size:8px;font-weight:600;
+                  letter-spacing:.06em;text-transform:uppercase;
+                  padding:3px 8px;border-radius:4px;border:1px solid var(--accent);
+                  background:rgba(79,126,255,0.12);color:var(--accent);
+                  cursor:pointer;transition:all .15s;
+                "
+                title="Auto-pick decoration based on your topic"
+              >✦ Auto</button>
+            </div>
+
+            <div class="f-group">
+              <div class="f-label" style="font-size:10px">Style</div>
+              <select id="igDecoStyle" onchange="generate()">
+                <optgroup label="─── Orbs &amp; Rings ───">
+                  <option value="orbs" selected>Orbs — soft glowing circles</option>
+                  <option value="halo">Halo — glowing ring aura</option>
+                  <option value="eclipse">Eclipse — partial arc shadow</option>
+                  <option value="bubbles">Bubbles — floating spheres</option>
+                  <option value="target">Target — concentric aim rings</option>
+                  <option value="rings">Rings — concentric mark</option>
+                  <option value="ripple">Ripple — expanding wave rings</option>
+                </optgroup>
+                <optgroup label="─── Geometric ───">
+                  <option value="geometric">Geometric — rotated squares</option>
+                  <option value="hexgrid">Hex Grid — honeycomb</option>
+                  <option value="triangles">Triangles — scattered tris</option>
+                  <option value="diamonds">Diamonds — rotated squares</option>
+                  <option value="star">Star — multi-point star</option>
+                  <option value="pentagons">Pentagons — 5-sided tiles</option>
+                  <option value="spiral">Spiral — Fibonacci arc</option>
+                  <option value="chevrons">Chevrons — arrow stacks</option>
+                  <option value="isometric">Isometric — 3D cube grid</option>
+                  <option value="rays">Rays — radial lines</option>
+                </optgroup>
+                <optgroup label="─── Radial / Burst ───">
+                  <option value="burst">Burst — starburst lines</option>
+                  <option value="sunburst">Sunburst — layered rays</option>
+                  <option value="topology">Topology — contour map</option>
+                  <option value="crosshatch">Crosshatch — diagonal grid</option>
+                  <option value="grid3d">Grid 3D — perspective plane</option>
+                </optgroup>
+                <optgroup label="─── Data &amp; Charts ───">
+                  <option value="barchart">Bar Chart — columns</option>
+                  <option value="linechart">Line Chart — trend line</option>
+                  <option value="scatterplot">Scatter Plot — dot cloud</option>
+                  <option value="donut">Donut — ring chart</option>
+                  <option value="radarchart">Radar Chart — spider web</option>
+                  <option value="funnel">Funnel — conversion tiers</option>
+                  <option value="timeline">Timeline — milestone dots</option>
+                </optgroup>
+                <optgroup label="─── Organic &amp; Art ───">
+                  <option value="waves">Waves — flowing arcs</option>
+                  <option value="mandala">Mandala — radial symmetry</option>
+                  <option value="aurora">Aurora — gradient bands</option>
+                  <option value="crystal">Crystal — shard polygon</option>
+                  <option value="vortex">Vortex — spiral arms</option>
+                  <option value="mosaic">Mosaic — tile grid</option>
+                  <option value="mondrian">Mondrian — color blocks</option>
+                  <option value="halftone">Halftone — dot screen</option>
+                  <option value="infinity">Infinity — lemniscate</option>
+                </optgroup>
+                <optgroup label="─── Tech &amp; Science ───">
+                  <option value="neural">Neural — node network</option>
+                  <option value="wifi">WiFi — signal arcs</option>
+                  <option value="dna">DNA — double helix</option>
+                  <option value="constellation">Constellation — star map</option>
+                  <option value="matrix">Matrix — falling chars</option>
+                  <option value="flowchart">Flowchart — process boxes</option>
+                  <option value="hex3d">Hex 3D — extruded hex</option>
+                </optgroup>
+                <optgroup label="─── Accents ───">
+                  <option value="corner">Corner — bracket accent</option>
+                  <option value="none">None — dots only</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="f-group">
+              <div class="f-label" style="font-size:10px">Position</div>
+              <select id="igDecoPosition" onchange="generate()">
+                <option value="tr" selected>Top-right</option>
+                <option value="tl">Top-left</option>
+                <option value="br">Bottom-right</option>
+                <option value="bl">Bottom-left</option>
+                <option value="center">Centre</option>
+                <option value="split">Split (two anchors)</option>
+              </select>
+            </div>
+
+            <div class="slider-row">
+              <span class="slider-label">Opacity</span>
+              <input
+                type="range"
+                id="igDecoOpacity"
+                min="10"
+                max="100"
+                value="80"
+                oninput="document.getElementById('igDecoOpVal').textContent=this.value+'%';generate()"
+              />
+              <span class="slider-val" id="igDecoOpVal">80%</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-label">Size</span>
+              <input
+                type="range"
+                id="igDecoSize"
+                min="30"
+                max="200"
+                value="100"
+                oninput="document.getElementById('igDecoSizeVal').textContent=this.value+'%';generate()"
+              />
+              <span class="slider-val" id="igDecoSizeVal">100%</span>
+            </div>
+
+            <!-- ══ BRAND LOGO SELECTOR ══ -->
+            <div class="sec-label" style="margin-top:6px">Brand Logo</div>
+            <div
+              id="igLogoGrid"
+              style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px"
+            ></div>
+            <div class="slider-row" style="margin-bottom:4px">
+              <span class="slider-label">Size</span>
+              <input
+                type="range"
+                id="igLogoScale"
+                min="50"
+                max="180"
+                value="100"
+                oninput="document.getElementById('igLogoScaleVal').textContent=this.value+'%';generate()"
+              />
+              <span class="slider-val" id="igLogoScaleVal">100%</span>
+            </div>
+
+            <!-- Footer URL hidden (removed from UI) -->
+            <input type="hidden" id="igFooter" value="edstellar.com"/>
+            <input type="hidden" id="igFooterAlign" value="right"/>
+            <div class="f-group">
+              <div class="f-label">Quick blog presets</div>
+              <div class="preset-pills">
+                <div class="preset-pill" onclick="loadIGPreset('frontend')">
+                  Frontend
+                </div>
+                <div class="preset-pill" onclick="loadIGPreset('cyber')">
+                  Cybersecurity
+                </div>
+                <div class="preset-pill" onclick="loadIGPreset('ai')">
+                  AI &amp; ML
+                </div>
+                <div class="preset-pill" onclick="loadIGPreset('cloud')">
+                  Cloud
+                </div>
+                <div class="preset-pill" onclick="loadIGPreset('data')">
+                  Data Science
+                </div>
+                <div class="preset-pill" onclick="loadIGPreset('backend')">
+                  Backend
+                </div>
+                <div class="preset-pill" onclick="loadIGPreset('devops')">
+                  DevOps
+                </div>
+                <div class="preset-pill" onclick="loadIGPreset('mobile')">
+                  Mobile
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sb-panel" id="panel-style">
+          <div>
+            <div class="sec-label">
+              Colour Palette
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 9px;
+                  color: var(--text-dim);
+                  text-transform: none;
+                  letter-spacing: 0;
+                "
+                id="pal-count"
+              ></span>
+            </div>
+            <div class="chip-grid-5" id="palGrid"></div>
+          </div>
+          <div>
+            <div class="sec-label">Custom Colours</div>
+            <div class="col-row">
+              <div class="col-item">
+                <div class="f-label" style="font-size: 10px">Dark</div>
+                <div class="col-swatch-wrap">
+                  <div class="col-swatch">
+                    <input
+                      type="color"
+                      id="c1"
+                      value="#0F1629"
+                      oninput="syncCol('c1')"
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    id="c1t"
+                    value="#0F1629"
+                    style="font-family: var(--mono); font-size: 10px"
+                    oninput="syncColText('c1')"
+                  />
+                </div>
+              </div>
+              <div class="col-item">
+                <div class="f-label" style="font-size: 10px">Light</div>
+                <div class="col-swatch-wrap">
+                  <div class="col-swatch">
+                    <input
+                      type="color"
+                      id="c2"
+                      value="#1E2D6B"
+                      oninput="syncCol('c2')"
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    id="c2t"
+                    value="#1E2D6B"
+                    style="font-family: var(--mono); font-size: 10px"
+                    oninput="syncColText('c2')"
+                  />
+                </div>
+              </div>
+              <div class="col-item">
+                <div class="f-label" style="font-size: 10px">Accent</div>
+                <div class="col-swatch-wrap">
+                  <div class="col-swatch">
+                    <input
+                      type="color"
+                      id="c3"
+                      value="#818CF8"
+                      oninput="syncCol('c3')"
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    id="c3t"
+                    value="#818CF8"
+                    style="font-family: var(--mono); font-size: 10px"
+                    oninput="syncColText('c3')"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="sec-label">
+              Background Pattern
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 9px;
+                  color: var(--text-dim);
+                  text-transform: none;
+                  letter-spacing: 0;
+                "
+                id="pat-count"
+              ></span>
+            </div>
+            <div class="chip-grid-4" id="patGrid"></div>
+          </div>
+          <div>
+            <div class="sec-label">Gradient Direction</div>
+            <select id="gradDir">
+              <option value="tl-br">Top-left → Bottom-right</option>
+              <option value="l-r">Left → Right</option>
+              <option value="t-b">Top → Bottom</option>
+              <option value="tr-bl">Top-right → Bottom-left</option>
+              <option value="radial">Radial (centre glow)</option>
+            </select>
+          </div>
+          <button class="gen-btn" onclick="generate()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M7 1v12M1 7h12"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Generate SVG
+          </button>
+        </div>
+        <div class="sb-panel" id="panel-icon">
+          <div>
+            <div class="sec-label">
+              Main Icon
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 9px;
+                  color: var(--text-dim);
+                  text-transform: none;
+                  letter-spacing: 0;
+                "
+                id="ico-count"
+              ></span>
+            </div>
+            <input
+              type="text"
+              id="icoSearch"
+              placeholder="Search icons… e.g. cloud, chart, health"
+              oninput="filterIcons(this.value)"
+              style="margin-bottom: 8px; font-size: 11px"
+            />
+            <div
+              class="chip-grid-4"
+              id="icoGrid"
+              style="max-height: 600px; overflow-y: auto; padding-right: 2px"
+            ></div>
+          </div>
+          <div>
+            <div class="sec-label">Icon Position</div>
+            <select id="icoPos">
+              <option value="left">Left (x 80–300)</option>
+              <option value="centre-left" selected>
+                Centre-left (x 110–340)
+              </option>
+              <option value="centre">Centre (x 260–560)</option>
+            </select>
+          </div>
+          <div>
+            <div class="sec-label">Icon Scale</div>
+            <div class="slider-row">
+              <div class="slider-label">Size</div>
+              <input
+                type="range"
+                id="icoScale"
+                min="60"
+                max="140"
+                value="100"
+                oninput="
+                  document.getElementById('icoScaleVal').textContent =
+                    this.value + '%'
+                "
+              />
+              <div class="slider-val" id="icoScaleVal">100%</div>
+            </div>
+          </div>
+          <div>
+            <div class="sec-label">Right-side Depth</div>
+            <select id="depthStyle">
+              <option value="orbs" selected>
+                Orb cluster (3 concentric groups)
+              </option>
+              <option value="radar">Radar rings + blips</option>
+              <option value="rings">Concentric rings only</option>
+              <option value="scatter">Scattered nodes</option>
+              <option value="minimal">Minimal (single orb)</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+          <button class="gen-btn" onclick="generate()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M7 1v12M1 7h12"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Generate SVG
+          </button>
+        </div>
+        <div class="sb-panel" id="panel-anim">
+          <div>
+            <div class="sec-label">
+              Animation Type
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 9px;
+                  color: var(--text-dim);
+                  text-transform: none;
+                  letter-spacing: 0;
+                "
+                id="ani-count"
+              ></span>
+            </div>
+            <div
+              style="display: flex; flex-direction: column; gap: 5px"
+              id="aniGrid"
+            ></div>
+          </div>
+          <div>
+            <div class="sec-label">Speed</div>
+            <select id="animSpeed">
+              <option value="fast">Fast (0.8–1.4s)</option>
+              <option value="normal" selected>Normal (1.5–2.5s)</option>
+              <option value="slow">Slow (2.5–4s)</option>
+              <option value="very-slow">Very slow (4–6s)</option>
+            </select>
+          </div>
+          <div>
+            <div class="sec-label">Intensity</div>
+            <div class="slider-row">
+              <div class="slider-label">Opacity</div>
+              <input
+                type="range"
+                id="animOpacity"
+                min="20"
+                max="100"
+                value="80"
+                oninput="
+                  document.getElementById('aoVal').textContent =
+                    this.value + '%'
+                "
+              />
+              <div class="slider-val" id="aoVal">80%</div>
+            </div>
+            <div class="slider-row" style="margin-top: 8px">
+              <div class="slider-label">Layers</div>
+              <input
+                type="range"
+                id="animLayers"
+                min="1"
+                max="4"
+                value="2"
+                oninput="
+                  document.getElementById('alVal').textContent = this.value
+                "
+              />
+              <div class="slider-val" id="alVal">2</div>
+            </div>
+          </div>
+          <button class="gen-btn" onclick="generate()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M7 1v12M1 7h12"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Generate SVG
+          </button>
+        </div>
+        <div class="sb-panel" id="panel-fine">
+          <div>
+            <div class="sec-label">Glow Intensity</div>
+            <div class="slider-row">
+              <div class="slider-label">Blur (px)</div>
+              <input
+                type="range"
+                id="glowBlur"
+                min="0"
+                max="18"
+                value="5"
+                oninput="
+                  document.getElementById('gbVal').textContent = this.value
+                "
+              />
+              <div class="slider-val" id="gbVal">5</div>
+            </div>
+            <div class="slider-row" style="margin-top: 8px">
+              <div class="slider-label">Spread</div>
+              <input
+                type="range"
+                id="glowSpread"
+                min="0"
+                max="18"
+                value="8"
+                oninput="
+                  document.getElementById('gsVal').textContent = this.value
+                "
+              />
+              <div class="slider-val" id="gsVal">8</div>
+            </div>
+          </div>
+          <div>
+            <div class="sec-label">Pattern Density</div>
+            <div class="slider-row">
+              <div class="slider-label">Opacity</div>
+              <input
+                type="range"
+                id="patOpacity"
+                min="3"
+                max="25"
+                value="14"
+                oninput="
+                  document.getElementById('poVal').textContent =
+                    this.value + '%'
+                "
+              />
+              <div class="slider-val" id="poVal">14%</div>
+            </div>
+          </div>
+          <div>
+            <div class="sec-label">Composition</div>
+            <select id="layoutVariant">
+              <option value="standard" selected>
+                Standard — icon left, depth right
+              </option>
+              <option value="centred">Centred — icon in middle</option>
+              <option value="minimal">Minimal — depth only, no icon</option>
+              <option value="full-pattern">
+                Full pattern — pattern dominates
+              </option>
+              <option value="split">Split — two icons mirrored</option>
+            </select>
+          </div>
+          <div>
+            <div class="sec-label">Accent Overlay</div>
+            <select id="overlayStyle">
+              <option value="none" selected>None</option>
+              <option value="vignette">Edge vignette</option>
+              <option value="top-glow">Top glow strip</option>
+              <option value="bottom-fade">Bottom fade to dark</option>
+              <option value="left-bright">Left brightness highlight</option>
+            </select>
+          </div>
+          <div>
+            <div class="sec-label">Colour Variants</div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <button
+                class="act-btn hi"
+                onclick="generateVariants()"
+                style="
+                  width: 100%;
+                  padding: 9px;
+                  text-align: center;
+                  font-size: 10px;
+                "
+              >
+                Generate 4 Colour Variants</button
+              ><button
+                class="act-btn"
+                onclick="generateMoodBoard()"
+                style="
+                  width: 100%;
+                  padding: 9px;
+                  text-align: center;
+                  font-size: 10px;
+                "
+              >
+                🎨 Generate 6-Variant Mood Board</button
+              ><button
+                class="act-btn"
+                onclick="randomise()"
+                style="
+                  width: 100%;
+                  padding: 9px;
+                  text-align: center;
+                  font-size: 10px;
+                "
+              >
+                🎲 Randomise Everything
+              </button>
+            </div>
+          </div>
+          <div>
+            <div class="sec-label">Export Quality</div>
+            <div class="slider-row">
+              <div class="slider-label">PNG Scale</div>
+              <input
+                type="range"
+                id="pngScale"
+                min="1"
+                max="4"
+                value="2"
+                step="1"
+                oninput="
+                  document.getElementById('psVal').textContent =
+                    this.value + '×'
+                "
+              />
+              <div class="slider-val" id="psVal">2×</div>
+            </div>
+          </div>
+          <button class="gen-btn" onclick="generate()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M7 1v12M1 7h12"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            Regenerate
+          </button>
+        </div>
+        <div class="sb-panel" id="panel-batch">
+          <div>
+            <div class="sec-label">Batch Skills</div>
+            <div class="f-group">
+              <div class="f-label">
+                Skill list <span class="f-hint">one per line</span>
+              </div>
+              <textarea
+                id="batchInput"
+                rows="6"
+                placeholder="Cybersecurity&#10;Software Development&#10;Cloud Computing&#10;Data Science&#10;Project Management&#10;Nursing and Healthcare&#10;Electrical Engineering&#10;Renewable Energy&#10;Mechanical Engineering&#10;Skilled Construction"
+              ></textarea>
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px">
+            <button class="gen-btn" onclick="generateBatch()" style="flex: 1">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path
+                  d="M7 1v12M1 7h12"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              Generate All</button
+            ><button
+              class="act-btn hi"
+              onclick="downloadAllBatch()"
+              style="padding: 12px 10px; font-size: 9px"
+            >
+              ↓ ZIP
+            </button>
+          </div>
+          <div>
+            <div class="sec-label">
+              Batch Preview
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 9px;
+                  color: var(--text-dim);
+                  text-transform: none;
+                  letter-spacing: 0;
+                "
+                id="batch-count"
+              ></span>
+            </div>
+            <div class="batch-grid" id="batchGrid"></div>
+          </div>
+          <div>
+            <div class="sec-label">Selected</div>
+            <div style="display: flex; gap: 5px">
+              <button
+                class="act-btn"
+                onclick="selectAllBatch()"
+                style="
+                  flex: 1;
+                  padding: 7px;
+                  text-align: center;
+                  font-size: 9px;
+                "
+              >
+                Select All</button
+              ><button
+                class="act-btn hi"
+                onclick="copySelectedBatch()"
+                style="
+                  flex: 1;
+                  padding: 7px;
+                  text-align: center;
+                  font-size: 9px;
+                "
+              >
+                ⎘ Copy Selected
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="sb-panel" id="panel-history">
+          <div>
+            <div class="sec-label">
+              Generation History
+              <span
+                style="
+                  font-family: var(--mono);
+                  font-size: 9px;
+                  color: var(--text-dim);
+                  text-transform: none;
+                  letter-spacing: 0;
+                "
+                id="hist-count"
+              ></span>
+            </div>
+            <div class="history-list" id="historyList">
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 10px;
+                  color: var(--text-dim);
+                  padding: 20px;
+                  text-align: center;
+                "
+              >
+                No history yet — generate some SVGs first
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 5px">
+            <button
+              class="act-btn"
+              onclick="clearHistory()"
+              style="flex: 1; padding: 7px; text-align: center; font-size: 9px"
+            >
+              Clear History</button
+            ><button
+              class="act-btn hi"
+              onclick="exportHistory()"
+              style="flex: 1; padding: 7px; text-align: center; font-size: 9px"
+            >
+              Export All
+            </button>
+          </div>
+          <div>
+            <div class="sec-label">Saved Presets</div>
+            <div
+              id="savedPresets"
+              style="display: flex; flex-direction: column; gap: 5px"
+            >
+              <div
+                style="
+                  font-family: var(--mono);
+                  font-size: 10px;
+                  color: var(--text-dim);
+                  padding: 10px;
+                  text-align: center;
+                "
+              >
+                No saved presets
+              </div>
+            </div>
+            <button
+              class="act-btn"
+              onclick="saveCurrentAsPreset()"
+              style="
+                width: 100%;
+                padding: 8px;
+                text-align: center;
+                font-size: 9px;
+                margin-top: 6px;
+              "
+            >
+              + Save Current as Preset
+            </button>
+          </div>
+        </div>
+        </div><!-- /sb-panels-wrap -->
+        <div class="sidebar-action-bar">
+          <button class="gen-btn" onclick="generate()" style="flex:1" title="Generate (G)">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1v12M1 7h12" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+            Generate
+          </button>
+          <button class="rand-btn" onclick="randomise()" title="Randomise visual style — keeps content (R)">
+            🎲 Randomize
+          </button>
+          <button class="png-btn" onclick="downloadPNG()" title="Download as PNG (P)">↓ PNG</button>
+        </div>
+      </div>
+      <div class="preview">
+        <div class="prev-bar">
+          <div class="prev-info">
+            <span style="color:var(--text-dim);letter-spacing:.1em">PREVIEW</span>
+            <span class="prev-pill" id="sizePill">820 × 180</span>
+            <span class="prev-pill" id="modePill" style="color:var(--accent);border-color:rgba(79,126,255,0.3);background:rgba(79,126,255,0.08)">Card</span>
+            <span class="prev-pill" id="pfxPill" style="font-size:8px">pfx: --</span>
+          </div>
+          <div class="act-row" style="gap:4px">
+            <div class="prev-mode-btns" style="margin-right:4px">
+              <button class="pmb active" id="pmb-single"  onclick="setPreviewMode('single',this)"  title="Single view">◻</button>
+              <button class="pmb"        id="pmb-compare" onclick="setPreviewMode('compare',this)" title="4 variants">⧈</button>
+              <button class="pmb"        id="pmb-context" onclick="setPreviewMode('context',this)" title="In context">⬕</button>
+            </div>
+            <button class="act-btn" onclick="copySVG()"    title="Copy SVG code">⎘ SVG</button>
+            <button class="act-btn" onclick="downloadSVG()" title="Download .svg file">↓ .svg</button>
+            <button class="act-btn hi" onclick="downloadPNG()" title="Download PNG">↓ PNG</button>
+            <button class="act-btn" onclick="copyEmbed()"  title="Copy embed code" style="display:none" id="embedBtn">⎘ Embed</button>
+            <button class="act-btn" onclick="copyAll()"    title="Copy all 4 variants" id="variantsBtn">⎘ Variants</button>
+          </div>
+        </div>
+        <div class="canvas" id="canvas">
+          <div class="empty" id="emptyState">
+            <div class="empty-icon" id="emptyStateIcon">◈</div>
+            <div id="emptyStateTitle" style="font-family: var(--display); font-size: 14px">
+              Configure and generate
+            </div>
+            <div id="emptyStateHint" style="font-family: var(--mono); font-size: 9px; opacity: 0.5">
+              Fill the sidebar → Generate SVG
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="src/jszip.min.js"></script>
+    <script src="src/app.js"></script>
+  </body>
+</html>
