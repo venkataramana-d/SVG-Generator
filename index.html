@@ -6,6 +6,15 @@
     <title>Edstellar SVG Studio v4 — Professional Skill Card Generator</title>
     <link rel="stylesheet" href="src/fonts.css">
     <link rel="stylesheet" href="src/style.css">
+    <script>
+      // Apply saved theme before paint to prevent flash. Default = light.
+      (function () {
+        try {
+          var t = localStorage.getItem('svgstudio-theme');
+          if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <header>
@@ -20,6 +29,17 @@
         </div>
       </div>
       <div class="header-pills">
+        <button
+          type="button"
+          class="theme-toggle"
+          id="themeToggle"
+          aria-label="Toggle theme"
+          title="Toggle light / dark theme"
+          onclick="toggleTheme()"
+        >
+          <span class="icon-moon">☾</span>
+          <span class="icon-sun">☀</span>
+        </button>
         <div class="hpill" id="hpill-palette">palette —</div>
         <div class="hpill" id="hpill-pattern">pattern —</div>
         <div class="hpill" id="hpill-icon">icon —</div>
@@ -1348,5 +1368,14 @@ AI-Augmented Development Literacy</textarea
     <div class="toast" id="toast"></div>
     <script src="src/jszip.min.js"></script>
     <script src="src/app.js"></script>
+    <script>
+      function toggleTheme() {
+        var root = document.documentElement;
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        if (next === 'dark') root.setAttribute('data-theme', 'dark');
+        else root.removeAttribute('data-theme');
+        try { localStorage.setItem('svgstudio-theme', next); } catch (e) {}
+      }
+    </script>
   </body>
 </html>
