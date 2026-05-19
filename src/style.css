@@ -4,11 +4,13 @@
         --surface: #ffffff;
         --surface2: #f0f2f6;
         --surface3: #e4e8ef;
-        --border: rgba(15, 20, 25, 0.08);
-        --border-hi: rgba(15, 20, 25, 0.20);
+        --border: rgba(15, 20, 25, 0.12);
+        --border-hi: rgba(15, 20, 25, 0.28);
         --text: #0f1419;
-        --text-mid: #5a6478;
-        --text-dim: #99a2b3;
+        --text-mid: #4a5468;
+        --text-dim: #6c7689;
+        --text-muted-soft: #7e8799;
+        --text-muted-strong: #5a6478;
         --accent: #3461e8;
         --accent-glow: rgba(52, 97, 232, 0.15);
         --green: #00a86b;
@@ -38,6 +40,8 @@
         --text: #eef0f6;
         --text-mid: #8892a8;
         --text-dim: #454e62;
+        --text-muted-soft: rgba(255, 255, 255, 0.4);
+        --text-muted-strong: rgba(255, 255, 255, 0.5);
         --accent: #4f7eff;
         --accent-glow: rgba(79, 126, 255, 0.2);
         --green: #00e5a0;
@@ -415,7 +419,7 @@
         text-align: center;
         font-family: var(--mono);
         font-size: 7px;
-        color: rgba(255, 255, 255, 0.4);
+        color: var(--text-muted-soft);
       }
       /* ── Edstellar Logo variant chips ── */
       .ig-logo-chip {
@@ -1042,7 +1046,7 @@
         justify-content: center;
         font-family: var(--mono);
         font-size: 8px;
-        color: rgba(255, 255, 255, 0.5);
+        color: var(--text-muted-strong);
       }
       .export-options {
         display: flex;
@@ -1246,7 +1250,7 @@
 
       /* Sidebar subtle gradient */
       .sidebar {
-        background: linear-gradient(180deg, #111520 0%, var(--surface) 100%);
+        background: linear-gradient(180deg, var(--surface3) 0%, var(--surface) 100%);
       }
 
       /* Header pills — active state */
@@ -1270,7 +1274,7 @@
 
       /* IG section cards */
       .ig-card {
-        background: rgba(255,255,255,0.024);
+        background: var(--overlay-soft);
         border: 1px solid var(--border);
         border-radius: var(--r);
         padding: 12px;
@@ -1313,7 +1317,7 @@
 
       /* Preview bar polish */
       .prev-bar {
-        background: rgba(8,10,14,0.7);
+        background: var(--overlay-strong);
         backdrop-filter: blur(8px);
       }
 
